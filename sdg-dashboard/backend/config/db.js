@@ -1,30 +1,23 @@
-// backend/config/db.js
-const mysql = require('mysql2');
 require('dotenv').config();
+const mysql = require('mysql2');
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'asia_db',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+const db = mysql.createConnection({
+  host: process.env.DB_HOST || 'dpg-d0mgs2u3jp1c738bg0o0-a',      // your database host
+  user: process.env.DB_USER || 'andrei',      // your database username
+  password: process.env.DB_PASS || 'kksWqZQfxBUA0rUHLXQBjWibUT2kq382',  // your database password
+  database: process.env.DB_NAME || 'asia_db_mubo',  // fallback to 'asia_db' if env var missing
+  port: 5432,
+  ssl: {
+    rejectUnauthorized: true      // enable if your DB requires SSL
+  }
 });
 
-// Test the connection with detailed error logging
-pool.getConnection((err, connection) => {
+db.connect((err) => {
   if (err) {
-    console.error('Database Connection Error Details:');
-    console.error('Error Code:', err.code);
-    console.error('Error Number:', err.errno);
-    console.error('SQL State:', err.sqlState);
-    console.error('Error Message:', err.message);
-    console.error('Full Error:', err);
+    console.error('Database connection failed:', err);
     return;
   }
-  console.log('Successfully connected to database');
-  connection.release();
+  console.log('Connected to the MySQL database!');
 });
 
-module.exports = pool;
+module.exports = db;
